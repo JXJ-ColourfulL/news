@@ -1,3 +1,6 @@
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+from News.models import News
 from User.models import User
 from libs.http import render_json
 from common import status_code
@@ -30,14 +33,33 @@ def save_avatar(avatar,username):
     """
     保存头像
     :param avatar: 头像图片
-    :param username: 用户名
+    :param username: 用户名auth_user
     :return: url: 头像路径
     """
     filename = "New_avatar_%s" % username
     avatar_data = avatar.read()
     status,url = upload_qncloud(filename,avatar_data)
+    print(url)
     if not status:
         return render_json(code=status_code.THIRDERR,resultValue='头像保存失败')
     return url
 
 
+def get_paging(page,new_id):
+    # 查询数据库中所有数据
+    news_list = News.objects.all().order_by('-create_time')
+    if page != 1:
+        print('1234r5t67')
+        news_list = news_list.filter(id__lt=new_id)
+    # 创建paginator对象 需两个参数 参数1为要被分页的对象，参数2为每页显示数量
+    paginator = Paginator(news_list, 10)
+    try:
+        # 获取pages对象传递给页面
+        pages = paginator.page(page)
+    # 	当传递页数的参数不为整数时，页码默认为1（一般在刷新页面时）
+    except PageNotAnInteger:
+        pages = paginator.page(1)
+    # 	当页面为空时，将显示最后一页内容
+    except EmptyPage:
+        pages = paginator.page(paginator.num_pages)
+    return pages

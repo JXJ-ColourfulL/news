@@ -1,6 +1,9 @@
+from django.http import QueryDict
+
 from User import logics
 from User.models import User
 from common import status_code
+from common import state
 from libs.http import render_json
 
 
@@ -13,10 +16,10 @@ def get_user(request):
     uid = request.session.get('uid')
     if uid:
         user = User.objects.get(id=uid)
-        data={
-            'nickname':user.nick_name,
-            'user_id':user.id,
-            'avatar':user.avatar_url,
+        data = {
+            'nickname': user.nick_name,
+            'user_id': user.id,
+            'avatar_url': user.avatar_url,
         }
         return render_json(data=data)
     return render_json()
@@ -33,14 +36,19 @@ def register(request):
     repassword = request.POST.get('repaswword')
     nickname = request.POST.get('nickname')
     avatar = request.FILES.get('avatar')
-
     logics.check_params(username, password, repassword, nickname)
 
-    avatar_url = logics.save_avatar(avatar, username)
+    if avatar == None:
+        avatar_url = state.DEFAULT_AVATAR_URL
+    else:
+        avatar_url = logics.save_avatar(avatar, username)
 
     user = User(username=username, nick_name=nickname, avatar_url=avatar_url)
     user.password = password
-    user.save()
+    try:
+        user.save()
+    except Exception:
+        return render_json(code=status_code.PARMERR, resultValue='此用户名已被注册')
     return render_json()
 
 
@@ -71,3 +79,22 @@ def logout(request):
     """
     request.session.flush()
     return render_json()
+
+
+def update_avatar(request):
+    """
+    修改头像
+    :param request:
+    :return:
+    """
+    user = request.user
+    avatar = request.FILES.get('avatar')
+
+    avatar_url = logics.save_avatar(avatar, user.username)
+    user.avatar_url = avatar_url
+    user.save()
+    data = {
+        'user_id': user.id,
+        'avatar_url': avatar_url,
+    }
+    return render_json(data=data)

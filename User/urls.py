@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^login/',api.login),
     url(r'^register/',api.register),
     url(r'^logout/',api.logout),
+    url(r'^update_avatar/',api.update_avatar),
 ]
