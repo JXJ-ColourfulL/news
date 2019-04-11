@@ -1,10 +1,25 @@
 from User import logics
 from User.models import User
+from common import status_code
 from libs.http import render_json
 
 
-def get_user_info(request):
-    return None
+def get_user(request):
+    """
+    获取个人信息
+    :param request:
+    :return:
+    """
+    uid = request.session.get('uid')
+    if uid:
+        user = User.objects.get(id=uid)
+        data={
+            'nickname':user.nick_name,
+            'user_id':user.id,
+            'avatar':user.avatar_url,
+        }
+        return render_json(data=data)
+    return render_json()
 
 
 def register(request):
@@ -30,8 +45,29 @@ def register(request):
 
 
 def login(request):
-    return None
+    """
+    登入
+    :param request:
+    :return:
+    """
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    user = User.objects.filter(username=username).first()
+    if not user:
+        return render_json(code=status_code.LOGINERR, resultValue='用户名错误')
+    if not user.check_password(password):
+        return render_json(code=status_code.LOGINERR, resultValue='用户名或密码错误')
+
+    request.session['uid'] = user.id
+    return render_json()
 
 
 def logout(request):
-    return None
+    """
+    登出
+    :param request:
+    :return:
+    """
+    request.session.flush()
+    return render_json()

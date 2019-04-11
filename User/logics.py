@@ -39,3 +39,5 @@ def save_avatar(avatar,username):
     if not status:
         return render_json(code=status_code.THIRDERR,resultValue='头像保存失败')
     return url
+
+

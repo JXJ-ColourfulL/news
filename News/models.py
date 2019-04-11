@@ -12,7 +12,7 @@ class Category(models.Model):
 class News(models.Model):
     title = models.CharField(max_length=64,unique=True,verbose_name='标题')
     content = models.TextField(verbose_name='内容')
-    create_time = models.DateTimeField(verbose_name='发布时间')
+    create_time = models.DateTimeField(auto_now_add=True,verbose_name='发布时间')
     index_img_url = models.CharField(max_length=256,null=True,verbose_name='新闻图片')
     clicks = models.IntegerField(default=0,verbose_name='点击量')
     comments_count = models.IntegerField(default=0,verbose_name='评论数')
