@@ -24,7 +24,6 @@ def save_news(publish,title,content,create_time,index_img_url,category_id,digest
     # filename = 'new_image_%s' % create_time
     # index_img_url=save_image(index_img,filename)
     new = News.objects.filter(title=title).first()
-    print(new)
     if not new:
         new = News()
         new.title=title

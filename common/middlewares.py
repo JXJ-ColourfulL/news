@@ -10,6 +10,8 @@ class UserMiddleware(MiddlewareMixin):
         '/api/user/register/',
         '/api/user/login/',
         '/api/news/get_news/',
+        '/api/news/new_detail/',
+        '/api/news/new_lists/',
     ]
 
     def process_request(self, request):

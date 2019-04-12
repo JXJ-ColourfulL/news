@@ -194,7 +194,7 @@ LOGGING = {
     # Logger 配置
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': ['error'],
         },
         'inf': {
             'handlers': ['info'],
