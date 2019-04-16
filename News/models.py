@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+from Back.models import Auther
 from User.models import User
 
 
@@ -19,7 +20,8 @@ class News(models.Model):
     clicks = models.IntegerField(default=0, verbose_name='点击量')
     comments_count = models.IntegerField(default=0, verbose_name='评论数')
     digest = models.CharField(max_length=128, verbose_name='描述')
-    publish = models.ForeignKey(User)
+    is_delete = models.IntegerField(default=0,verbose_name='是否删除')
+    publish = models.ForeignKey(Auther)
     category = models.ForeignKey(Category)
 
     class Meta:
@@ -31,7 +33,7 @@ class News(models.Model):
             'new_title': self.title,
             'new_time': self.create_time.strftime('%Y-%m-%d %H:%M:%S'),
             'new_content': self.content,
-            'new_publish': self.publish.username,
+            'new_publish': self.publish.authername,
             'new_publish_img': self.publish.avatar_url,
         }
         return news_dict

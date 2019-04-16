@@ -1,28 +1,14 @@
 from django.core.cache import cache
 from django.http import HttpResponse
 
-from News.logics import save_news
+from News.logics import get_paging
 from News.models import News
-from User.logics import get_paging
+
 from common import keys, state
 from libs.http import render_json
 
 
-def get_news(request):
-    """
-    保存新闻
-    :param request:
-    :return:
-    """
-    title = request.POST.get('title')
-    content = request.POST.get('content')
-    create_time = request.POST.get('create_time')
-    index_img_url = request.POST.get('index_img_url')
-    publish = request.POST.get('publish')
-    category_id = request.POST.get('category_id')
-    digest = request.POST.get('digest')
-    save_news(publish, title, content, create_time, index_img_url, category_id, digest)
-    return HttpResponse('ok')
+
 
 
 def get_swiper(request):
@@ -71,19 +57,12 @@ def new_lists(request):
     :return:
     """
 
-    last_id = request.GET.get('new_id')
+    # last_id = request.GET.get('new_last_id')
     page = int(request.GET.get('page', 1))
-    key = keys.NEW_LIST_KEY % (page, last_id)
-    if last_id!=None:
-        news_lists = cache.get(key)
-        if news_lists:
-            print('cache')
-            return render_json(data=news_lists)
-
-    pages = get_paging(page, last_id)
+    uniq = request.GET.get('uniq')
+    pages,nuniq = get_paging(page,uniq)
     news_lists = [new.to_less_dict() for new in pages]
-    cache.set(key,news_lists,state.NEWS_CACHE_TIMEOUT)
-    return render_json(data=news_lists)
+    return render_json(data=news_lists,uniq=nuniq)
 
 
 def new_detail(request):

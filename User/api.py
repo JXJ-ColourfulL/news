@@ -41,7 +41,7 @@ def register(request):
     if avatar == None:
         avatar_url = state.DEFAULT_AVATAR_URL
     else:
-        avatar_url = logics.save_avatar(avatar, username)
+        avatar_url = logics.save_avatar(avatar)
 
     user = User(username=username, nick_name=nickname, avatar_url=avatar_url)
     user.password = password
@@ -90,7 +90,7 @@ def update_avatar(request):
     user = request.user
     avatar = request.FILES.get('avatar')
 
-    avatar_url = logics.save_avatar(avatar, user.username)
+    avatar_url = logics.save_avatar(avatar)
     user.avatar_url = avatar_url
     user.save()
     data = {

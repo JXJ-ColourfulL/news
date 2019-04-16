@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/user/', include('User.urls')),
     url(r'^api/news/', include('News.urls')),
+    url(r'^api/back/', include('Back.urls')),
 ]

@@ -6,3 +6,7 @@ THIRDERR = 1100 # 第三方平台错误
 NODATA   = 1002 # 无数据
 LOGINERR  = 1003 # 登入错误
 SESSIONERR = 1004 #用户未登入
+PERMISSIONERR = 1005 #权限不够
+EXEERR = 1006 #执行错误
+DBERR = 1007 #数据库错误
+DATAEXITERR = 1008 #数据已存在
